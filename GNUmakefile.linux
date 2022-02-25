@@ -1,0 +1,80 @@
+##################################################################
+# TODO: Title
+#
+# Inspired by zlib
+#		https://github.com/madler/zlib
+# Author: Grishankov Alexander
+#		https://github.com/Grishankov-Alexander
+##################################################################
+
+
+
+
+# Your application name and version
+APPNAME=myapp
+
+# Project directories
+DIRSRC=src
+DIRINC=include
+DIRLIB=lib
+DIRBUILD=build
+DIRHELPER=helper
+
+# List of C Sources and corresponding objects
+SRC_C:=$(wildcard $(DIRSRC)/*.c)
+OBJS:=$(patsubst $(DIRSRC)/%.c,$(DIRBUILD)/%.o,$(SRC_C))
+
+# Headers
+SRC_H:=$(wildcard $(DIRSRC)/*.h)
+
+# API headers
+SRC_H_API:=$(wildcard $(DIRINC)/*.h)
+
+# Libraries to link with
+LIBSTATICFOREIGN:=$(wildcard $(DIRLIB)/*.a)
+LIBSHAREDFOREIGN:=$(wildcard $(DIRLIB)/*.so)
+LIBSHAREDFOREIGN+=$(wildcard $(DIRLIB)/*.so.*)
+LIBSFOREIGN:=$(LIBSHAREDFOREIGN) $(LIBSTATICFOREIGN)
+LIBSSYSTEM=-lc -lm
+
+# Programs for building
+CC=gcc
+
+# Flags for building
+CPPFLAGS:=-I$(DIRSRC) -I$(DIRINC)
+CFLAGS=-O3 -std=c17 -Wall -pedantic
+LDFLAGS:=-L$(DIRLIB) \
+	-Wl,-rpath='$$ORIGIN:$$ORIGIN/$(DIRLIB):$$ORIGIN/../$(DIRLIB)' \
+	-Wl,-rpath-link='$(DIRLIB)'
+LDLIBS=$(LIBSSYSTEM) $(addprefix -l:,$(notdir $(LIBSHAREDFOREIGN))) $(LIBSTATICFOREIGN)
+
+all: $(DIRBUILD)/$(APPNAME)
+
+$(DIRBUILD)/$(APPNAME): $(OBJS) $(LIBSFOREIGN)
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $(OBJS) $(LDLIBS)
+
+# TODO
+install: all
+
+clean:
+	-rm -f $(DIRBUILD)/* $(DIRBUILD)/*~ *~
+
+# TODO
+uninstall:
+
+$(DIRBUILD)/%.o: $(DIRSRC)/%.c
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c -o $@ $<
+
+deps.linux: finddeps $(SRC_C) $(SRC_H) $(SRC_H_API)
+	-@echo -n "" > $@
+	-@for src in $(basename $(notdir $(SRC_C))); do \
+	    deps=$$(./$< $(DIRSRC)/$$src.c $(DIRSRC) $(DIRINC)); \
+		echo -n "$(DIRBUILD)/$$src.o: " >> $@; \
+		echo $$deps >> $@; \
+		echo "" >> $@; \
+	done
+
+finddeps: $(DIRHELPER)/finddeps.c
+	$(CC) $(CFLAGS) -o $@ $<
+
+include deps.linux
