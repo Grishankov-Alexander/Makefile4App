@@ -53,8 +53,7 @@ SRC_H_API:=$(wildcard $(DIRINC)/*.h)
 
 # Libraries to link with
 LIBSTATICFOREIGN:=$(wildcard $(DIRLIB)/*.a)
-LIBSHAREDFOREIGN:=$(wildcard $(DIRLIB)/*.so)
-LIBSHAREDFOREIGN+=$(wildcard $(DIRLIB)/*.so.*)
+LIBSHAREDFOREIGN:=$(wildcard $(DIRLIB)/*.so) $(wildcard $(DIRLIB)/*.so.*)
 LIBSFOREIGN:=$(LIBSHAREDFOREIGN) $(LIBSTATICFOREIGN)
 LIBSSYSTEM=-lc -lm
 
@@ -67,7 +66,7 @@ CFLAGS=-O3 -std=c17 -Wall -pedantic
 LDFLAGS:=-L$(DIRLIB) \
 	-Wl,-rpath='$$ORIGIN:$$ORIGIN/$(DIRLIB):$$ORIGIN/../$(DIRLIB)' \
 	-Wl,-rpath-link='$(DIRLIB)'
-LDLIBS=$(LIBSSYSTEM) $(addprefix -l:,$(notdir $(LIBSHAREDFOREIGN))) $(LIBSTATICFOREIGN)
+LDLIBS:=$(LIBSSYSTEM) $(addprefix -l:,$(notdir $(LIBSFOREIGN)))
 
 all: $(DIRBUILD)/$(APPNAME)
 

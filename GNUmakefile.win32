@@ -86,16 +86,12 @@ $(DIRBUILD)/%.obj: $(DIRSRC)/%.c
 	$(CC) $(CFLAGS) $(CPPFLAGS) $(WFLAGS) /c /Fo$@ $<
 
 deps.win32: finddeps.exe $(SRC_C) $(SRC_H) $(SRC_H_API)
-ifeq "$(SRC_C)" ""
-	-@echo | set /P dummyvar="" > $@
-else
 	-@echo | set /P dummyvar="" > $@ & ^\
 	for %%s in ($(basename $(notdir $(SRC_C)))) do ^\
 	echo | set /P dummyvar="$(DIRBUILD)/%%s.obj:" >> $@ & ^\
 	.\$< $(DIRSRC)/%%s.c $(DIRSRC) $(DIRINC) >> $@ & ^\
 	echo. >> $@ & ^\
 	echo. >> $@
-endif
 
 finddeps.exe: $(DIRHELPER)/finddeps.c
 	$(CC) $(CFLAGS) $(WFLAGS) /Fe$@ $< > NUL
