@@ -32,7 +32,7 @@ How do I build my app on Windows ?
         INFO: https://docs.microsoft.com/en-us/cpp/build/building-on-the-command-line
     5) Change directory
         cd ./Makefile4App
-    4) Execute make command. For
+    4) Execute make command.
         make -f GNUmakefile.win32
     P.S. For all available options see "Usage, Variables and Targets" below.
 
