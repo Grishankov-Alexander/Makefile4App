@@ -1,0 +1,84 @@
+What is Makefile4App ?
+    Makefile4App is an organized directory tree that contains
+    2 Makefiles and a helper-program so you can easily build
+    any C application project on Windows or Linux.
+
+
+How should I structure my project ?
+    src     - *.c and *.h files.
+    lib     - *.a *.so *.so.* (Linux) or *.lib *.dll (Windows) files.
+    include - *.h files.
+
+
+How do I build my app on Linux ?
+    1) Clone this repo into desired location or download it.
+        git clone https://github.com/Grishankov-Alexander/Makefile4App.git
+        cd ./Makefile4App
+    2) Structure your project according to the instructions above.
+    3) Install GNU make program if not installed.
+    4) Execute make command.
+        make -f GNUmakefile.linux
+    P.S. For all available options see "GNUmakefile.linux Usage, Variables and Targets" below.
+
+
+How do I build my app on Windows ?
+    1) Clone this repo into desired location or download it.
+        git clone https://github.com/Grishankov-Alexander/Makefile4App.git
+    2) Structure your project according to the instructions above.
+    3) Install GNU make program.
+        INFO: https://community.chocolatey.org/packages/make
+        P.S. Native nmake was tried and it lacks a lot of required functionality.
+    4) Launch Developer command prompt for VS.
+        INFO: https://docs.microsoft.com/en-us/cpp/build/building-on-the-command-line
+    5) Change directory
+        cd ./Makefile4App
+    4) Execute make command. For
+        make -f GNUmakefile.win32
+    P.S. For all available options see "GNUmakefile.win32 Usage, Variables and Targets" below.
+
+
+What is helper/finddeps.c ?
+    finddeps.c is a source file that will be compiled into
+    a special program that finds header dependencies for your C source files.
+    This dependencies will be written into "deps.linux" or "deps.windows"
+    file that is included by main GNUmakefile.
+    All this is done so that your project will be built correctly
+    when you modify your source files or add new headers and libraries.
+
+
+GNUmakefile.linux Usage, Variables and Targets
+    Usage:
+        make -f GNUmakefile.linux [OPTIONS] [VARIABLE="VALUE" [VARIABLE="VALUE"]] [TARGET [TARGET]]
+
+    Example:
+        make -f GNUmakefile.linux -i -s APPNAME="mycalc" CPPFLAGS="/DGNU /DLINUX" all
+
+    OPTIONS:
+        Options to GNU make itself.
+    
+    TARGETS:
+        all - Build your application project into "build" directory.
+        clean - Delete everything from the "build" directory.
+    
+    VARIABLES:
+        APPNAME - name of the resulting executable.
+            Default value: myapp
+
+
+GNUmakefile.win32 Usage, Variables and Targets
+    Usage:
+        make -f GNUmakefile.win32 [OPTIONS] [VARIABLE="VALUE" [VARIABLE="VALUE"]] [TARGET [TARGET]]
+
+    Example:
+        make -f GNUmakefile.win32 -i -s APPNAME="mycalc" CPPFLAGS="/DWIN32 /DDEBUG" all
+
+    OPTIONS:
+        Options to GNU make itself.
+    
+    TARGETS:
+        all - Build your application project into "build" directory.
+        clean - Delete everything from the "build" directory.
+
+    VARIABLES:
+        APPNAME - name of the resulting executable.
+            Default value: myapp.exe
