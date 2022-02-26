@@ -18,7 +18,7 @@ How do I build my app on Linux ?
     3) Install GNU make program if not installed.
     4) Execute make command.
         make -f GNUmakefile.linux
-    P.S. For all available options see "GNUmakefile.linux Usage, Variables and Targets" below.
+    P.S. For all available options see "Usage, Variables and Targets" below.
 
 
 How do I build my app on Windows ?
@@ -34,51 +34,56 @@ How do I build my app on Windows ?
         cd ./Makefile4App
     4) Execute make command. For
         make -f GNUmakefile.win32
-    P.S. For all available options see "GNUmakefile.win32 Usage, Variables and Targets" below.
+    P.S. For all available options see "Usage, Variables and Targets" below.
 
 
 What is helper/finddeps.c ?
     finddeps.c is a source file that will be compiled into
-    a special program that finds header dependencies for your C source files.
+    a program that recursively finds header dependencies for your C source files.
     This dependencies will be written into "deps.linux" or "deps.windows"
-    file that is included by main GNUmakefile.
+    file which will be included into main GNUmakefile.
     All this is done so that your project will be built correctly
-    when you modify your source files or add new headers and libraries.
+    if you modify your source files or add new headers and libraries.
 
 
-GNUmakefile.linux Usage, Variables and Targets
+Usage, Variables and Targets
     Usage:
-        make -f GNUmakefile.linux [OPTIONS] [VARIABLE="VALUE" [VARIABLE="VALUE"]] [TARGET [TARGET]]
+        make -f <MAKEFILE> [OPTIONS] [VARIABLE="VALUE" [VARIABLE="VALUE"]] [TARGET]
 
     Example:
         make -f GNUmakefile.linux -i -s APPNAME="mycalc" CPPFLAGS="/DGNU /DLINUX" all
 
-    OPTIONS:
-        Options to GNU make itself.
-    
-    TARGETS:
-        all - Build your application project into "build" directory.
-        clean - Delete everything from the "build" directory.
-    
-    VARIABLES:
-        APPNAME - name of the resulting executable.
-            Default value: myapp
-
-
-GNUmakefile.win32 Usage, Variables and Targets
-    Usage:
-        make -f GNUmakefile.win32 [OPTIONS] [VARIABLE="VALUE" [VARIABLE="VALUE"]] [TARGET [TARGET]]
-
-    Example:
-        make -f GNUmakefile.win32 -i -s APPNAME="mycalc" CPPFLAGS="/DWIN32 /DDEBUG" all
+    MAKEFILE
+        For Windows - GNUmakefile.win32
+        For Linux - GNUmakefile.linux
 
     OPTIONS:
         Options to GNU make itself.
     
     TARGETS:
-        all - Build your application project into "build" directory.
+        all - Default target. Build your application project into "build" directory.
         clean - Delete everything from the "build" directory.
 
     VARIABLES:
         APPNAME - name of the resulting executable.
-            Default value: myapp.exe
+            Default on Linux: myapp
+            Default on Windows: myapp.exe
+        CC - C compiler.
+            Default on Linux: gcc
+            Default on Windows: cl
+        LD - Linker (Windows only).
+            Default on Windows: link
+        CFLAGS - C compiler flags.
+            Default on Linux: -O3 -std=c17 -Wall -pedantic
+            Default on Windows: /nologo /MD /Wall /O2 /std:c17
+        CPPFLAGS - C preprocessor flags.
+            Default on Linux: -Isrc -Iinclude
+            Default on Windows: /Isrc /Iinclude
+        WFLAGS - Macros that control warnings (Windows only).
+            Default on Windows: /D_CRT_SECURE_NO_DEPRECATE /D_CRT_NONSTDC_NO_DEPRECATE
+        LIBSSYSTEM - System libraries to link with.
+            Default on Linux: -lc -lm
+                P.S. Standard C and math libraries
+            Default on Windows:
+                P.S. None by default.
+                Example: make -f GNUmakefile.win32 LIBSSYSTEM="d3d11.lib ncrypt.lib"
