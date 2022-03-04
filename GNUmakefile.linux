@@ -78,6 +78,7 @@ install: all
 
 clean:
 	-rm -f $(DIRBUILD)/* $(DIRBUILD)/*~ *~
+	-rm -f deps.linux finddeps
 
 # TODO
 uninstall:
